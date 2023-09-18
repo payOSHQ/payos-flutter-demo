@@ -3,6 +3,7 @@ import 'package:base/api/payos_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:base/widgets/input.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DemoScreen extends StatefulWidget {
   const DemoScreen({super.key});
@@ -29,9 +30,26 @@ class _DemoScreen extends State<DemoScreen> {
       "cancelUrl": "testapp:///result",
     });
     print(res);
-    if (res["error"] != 0)
-      print("Lỗi");
-    else {
+    if (res["error"] != 0) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Lỗi"),
+            content: const Text("Gọi API thất bại. Vui lòng thử lại sau."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Đóng thông báo
+                },
+                child: const Text("Đóng"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
       checkoutUrl = res["data"]["checkoutUrl"];
     }
   }
@@ -94,66 +112,32 @@ class _DemoScreen extends State<DemoScreen> {
                     : () async {
                         setState(() => _isLoading = true);
                         await paymentCheckout();
-                        if (!context.mounted) return;
-                        late final WebViewController controller;
-                        controller = WebViewController()
-                          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                          ..setNavigationDelegate(
-                            NavigationDelegate(
-                              onProgress: (int progress) {},
-                              onPageStarted: (String url) {},
-                              onPageFinished: (String url) {},
-                              onWebResourceError: (WebResourceError error) {},
-                              onNavigationRequest: (NavigationRequest request) {
-                                Uri uri = Uri.parse(request.url);
-                                if (uri.scheme == "testapp") {
-                                  context.go(Uri(
-                                          path: uri.path,
-                                          queryParameters: uri.queryParameters)
-                                      .toString());
-                                }
-                                return NavigationDecision.prevent;
-                              },
-                            ),
-                          )
-                          ..loadRequest(
-                            Uri.parse(checkoutUrl),
-                          );
-                        showGeneralDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          barrierLabel: "Modal",
-                          transitionDuration: const Duration(milliseconds: 500),
-                          pageBuilder: (_, __, ___) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                  title: const Text(
-                                    "Trang thanh toán",
-                                  ),
-                                  leading: IconButton(
-                                      icon: const Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                      ),
+                        if (checkoutUrl != "") {
+                          final Uri url = Uri.parse(checkoutUrl);
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Lỗi"),
+                                  content: const Text("Không thể mở liên kết"),
+                                  actions: [
+                                    TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context);
-                                      }),
-                                  elevation: 0.0),
-                              backgroundColor: Colors.white.withOpacity(0.90),
-                              body: Container(
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Color(0xfff8f8f8),
-                                      width: 1,
+                                        Navigator.of(context)
+                                            .pop(); // Đóng thông báo
+                                      },
+                                      child: const Text("Đóng"),
                                     ),
-                                  ),
-                                ),
-                                child: WebViewWidget(controller: controller),
-                              ),
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
+                          }
+                        }
                         setState(() => _isLoading = false);
                       },
                 label: const Text('Đến trang thanh toán'),
