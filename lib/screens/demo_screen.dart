@@ -26,8 +26,8 @@ class _DemoScreen extends State<DemoScreen> {
       "description": _description,
       "productName": _name,
       "price": _cost,
-      "returnUrl": "testapp:///result",
-      "cancelUrl": "testapp:///result",
+      "returnUrl": "https://dev.pay.payos.vn/result",
+      "cancelUrl": "https://dev.pay.payos.vn/result",
     });
     print(res);
     if (res["error"] != 0) {
@@ -69,83 +69,85 @@ class _DemoScreen extends State<DemoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Center(child: Text('Demo'))),
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Input(
-                value: _name,
-                header: "Tên sản phẩm:",
-                label: "Nhập tên sản phẩm",
-                onChange: onChangeName,
-              ),
-              Input(
-                value: _cost,
-                header: "Đơn giá:",
-                label: "Nhập đơn giá",
-                onChange: onChangeCost,
-              ),
-              Input(
-                value: _description,
-                header: 'Nội dung thanh toán:',
-                label: 'Nội dung thanh toán',
-                onChange: onChangeDescription,
-              ),
-              ElevatedButton.icon(
-                icon: _isLoading
-                    ? Container(
-                        width: 24,
-                        height: 24,
-                        padding: const EdgeInsets.all(2.0),
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 3,
-                        ),
-                      )
-                    : const Icon(Icons.payments),
-                onPressed: _isLoading
-                    ? null
-                    : () async {
-                        setState(() => _isLoading = true);
-                        await paymentCheckout();
-                        if (checkoutUrl != "") {
-                          final Uri url = Uri.parse(checkoutUrl);
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url);
-                          } else {
-                            // ignore: use_build_context_synchronously
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Lỗi"),
-                                  content: const Text("Không thể mở liên kết"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Đóng thông báo
-                                      },
-                                      child: const Text("Đóng"),
-                                    ),
-                                  ],
+        appBar: AppBar(title: const Center(child: Text('Demo'))),
+        body: SingleChildScrollView(
+          child: Center(
+              child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Input(
+                    value: _name,
+                    header: "Tên sản phẩm:",
+                    label: "Nhập tên sản phẩm",
+                    onChange: onChangeName,
+                  ),
+                  Input(
+                    value: _cost,
+                    header: "Đơn giá:",
+                    label: "Nhập đơn giá",
+                    onChange: onChangeCost,
+                  ),
+                  Input(
+                    value: _description,
+                    header: 'Nội dung thanh toán:',
+                    label: 'Nội dung thanh toán',
+                    onChange: onChangeDescription,
+                  ),
+                  ElevatedButton.icon(
+                    icon: _isLoading
+                        ? Container(
+                            width: 24,
+                            height: 24,
+                            padding: const EdgeInsets.all(2.0),
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : const Icon(Icons.payments),
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            setState(() => _isLoading = true);
+                            await paymentCheckout();
+                            if (checkoutUrl != "") {
+                              final Uri url = Uri.parse(checkoutUrl);
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url);
+                              } else {
+                                // ignore: use_build_context_synchronously
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Lỗi"),
+                                      content:
+                                          const Text("Không thể mở liên kết"),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Đóng thông báo
+                                          },
+                                          child: const Text("Đóng"),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
-                        }
-                        setState(() => _isLoading = false);
-                      },
-                label: const Text('Đến trang thanh toán'),
+                              }
+                            }
+                            setState(() => _isLoading = false);
+                          },
+                    label: const Text('Đến trang thanh toán'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      )),
-    );
+            ),
+          )),
+        ));
   }
 }

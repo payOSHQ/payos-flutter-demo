@@ -24,7 +24,12 @@ class ResultScreen extends StatelessWidget {
           var res = snapshot.data;
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Hiển thị giao diện khi tác vụ đang chờ.
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                color: Colors.indigo,
+              ),
+            );
           } else if (snapshot.hasError || res?["error"] != 0) {
             //Xử lý lỗi gọi Api ở đây
             return Text('Lỗi: ${snapshot.error}');
