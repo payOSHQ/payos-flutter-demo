@@ -83,7 +83,7 @@ class ResultScreen extends StatelessWidget {
                                 ? res!["data"]!["webhook_snapshot"]!["data"]
                                 : {}),
                         ElevatedButton(
-                          onPressed: () => context.go('/'),
+                          onPressed: () => context.go('/blogs'),
                           child: const Text('Go back to the Demo screen'),
                         ),
                       ],
