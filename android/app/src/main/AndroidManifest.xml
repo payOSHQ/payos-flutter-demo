@@ -34,7 +34,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data  android:scheme="https" android:host="dev.pay.payos.vn" android:pathPrefix="/blogs/"/>
+                <data  android:scheme="app" android:host="dev.pay.payos.vn" android:pathPrefix="/blogs/"/>
                 <!-- <data  android:scheme="testapp1"/> -->
 
                 <!-- <data android:scheme="https"/> -->

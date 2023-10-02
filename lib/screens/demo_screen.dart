@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:base/api/payos_api.dart';
-import 'package:go_router/go_router.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:base/widgets/input.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -26,8 +24,8 @@ class _DemoScreen extends State<DemoScreen> {
       "description": _description,
       "productName": _name,
       "price": _cost,
-      "returnUrl": "https://dev.pay.payos.vn/blogs/result",
-      "cancelUrl": "https://dev.pay.payos.vn/blogs/result",
+      "returnUrl": "app://dev.pay.payos.vn/blogs/result",
+      "cancelUrl": "app://dev.pay.payos.vn/blogs/result",
     });
     print(res);
     if (res["error"] != 0) {

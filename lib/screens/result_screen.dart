@@ -11,7 +11,6 @@ class ResultScreen extends StatelessWidget {
   Future<Map<String, dynamic>> fetchData() async {
     // await Future.delayed(Duration(seconds: 2));
     var result = await getOrder(orderCode);
-    print(result);
     return result;
   }
 
@@ -52,13 +51,13 @@ class ResultScreen extends StatelessWidget {
                                       fontSize: 16, color: Colors.black),
                                 ),
                                 TextSpan(
-                                  text: res!["data"]["id"].toString(),
+                                  text: res["data"]["id"].toString(),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                if (res!["data"]["status"] == "PAID")
+                                if (res["data"]["status"] == "PAID")
                                   const TextSpan(
                                     text: " đã được thanh toán",
                                     style: TextStyle(
@@ -79,8 +78,8 @@ class ResultScreen extends StatelessWidget {
                         OrderTable(data: res["data"]),
                         //Payment Field Table
                         PaymentFieldTable(
-                            data: res!["data"]!["webhook_snapshot"] != null
-                                ? res!["data"]!["webhook_snapshot"]!["data"]
+                            data: res["data"]!["webhook_snapshot"] != null
+                                ? res["data"]!["webhook_snapshot"]!["data"]
                                 : {}),
                         ElevatedButton(
                           onPressed: () => context.go('/blogs'),
