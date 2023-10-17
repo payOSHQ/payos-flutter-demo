@@ -1,9 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.payos_flutter">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.payos_demo">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="payos_flutter"
+        android:label="payos_demo"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
@@ -34,7 +34,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data  android:scheme="app" android:host="dev.pay.payos.vn" android:pathPrefix="/blogs/"/>
+                <data  android:scheme="http" android:host="api-demo.payos.vn"/>
+                <data  android:scheme="https"/>
                 <!-- <data  android:scheme="testapp1"/> -->
 
                 <!-- <data android:scheme="https"/> -->

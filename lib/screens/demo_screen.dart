@@ -24,8 +24,8 @@ class _DemoScreen extends State<DemoScreen> {
       "description": _description,
       "productName": _name,
       "price": _cost,
-      "returnUrl": "app://dev.pay.payos.vn/blogs/result",
-      "cancelUrl": "app://dev.pay.payos.vn/blogs/result",
+      "returnUrl": "https://api-demo.payos.vn/result",
+      "cancelUrl": "https://api-demo.payos.vn/result",
     });
     print(res);
     if (res["error"] != 0) {

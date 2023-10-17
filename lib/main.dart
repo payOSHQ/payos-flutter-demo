@@ -12,16 +12,16 @@ void main() async {
 }
 
 final GoRouter _router = GoRouter(
-  initialLocation: '/blogs',
+  initialLocation: '/',
   routes: <RouteBase>[
     GoRoute(
-      path: '/blogs',
+      path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return const DemoScreen();
       },
     ),
     GoRoute(
-      path: '/blogs/result',
+      path: '/result',
       builder: (BuildContext context, GoRouterState state) {
         // var name = state.queryParametersAll['code']!;
         String orderCode = state.queryParams["orderCode"]!;

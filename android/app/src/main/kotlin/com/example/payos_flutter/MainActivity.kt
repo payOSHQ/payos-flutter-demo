@@ -1,4 +1,4 @@
-package com.example.payos_flutter
+package com.example.payos_demo
 
 import io.flutter.embedding.android.FlutterActivity
 
