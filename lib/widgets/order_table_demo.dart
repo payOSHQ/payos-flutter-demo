@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:base/widgets/list_item.dart';
 
 class OrderTable extends StatelessWidget {
-  OrderTable({Key? key, required this.data}) : super(key: key);
+  const OrderTable({Key? key, required this.data}) : super(key: key);
 
   final Map<String, dynamic> data;
 
@@ -54,7 +54,7 @@ class OrderTable extends StatelessWidget {
                   child: Text("Trạng thái"),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(data["status"] == "PAID"
                       ? "Đã thanh toán"
                       : "Chưa thanh toán"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:base/screens/demo_screen.dart';
 import 'package:base/screens/result_screen.dart';
+import 'package:base/screens/payment_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
@@ -18,6 +19,21 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return const DemoScreen();
+      },
+    ),
+    GoRoute(
+      path: '/payment',
+      builder: (BuildContext context, GoRouterState state) {
+        Map<String, String> orderInfo = state.queryParams;
+        print(orderInfo);
+        return PaymentSreen(
+            orderCode: orderInfo["orderCode"]!,
+            accountName: orderInfo["accountName"]!,
+            accountNumber: orderInfo["accountNumber"]!,
+            amount: orderInfo["amount"]!,
+            bin: orderInfo["bin"]!,
+            description: orderInfo["description"]!,
+            qrCode: orderInfo["qrCode"]!);
       },
     ),
     GoRoute(

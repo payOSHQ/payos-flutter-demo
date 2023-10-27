@@ -42,10 +42,14 @@ class PaymentFieldTable extends StatelessWidget {
         DataRow(
           cells: <DataCell>[
             DataCell(SizedBox(
-                width: 80, //SET width
+                width: MediaQuery.of(context).size.width / 5, //SET width
                 child: Text(key))),
-            DataCell(SizedBox(width: 150, child: Text(value.toString()))),
-            DataCell(SizedBox(width: 80, child: Text(WEBHOOK_FIELD_DESC[key]))),
+            DataCell(SizedBox(
+                width: MediaQuery.of(context).size.width / 3,
+                child: Text(value.toString()))),
+            DataCell(SizedBox(
+                width: MediaQuery.of(context).size.width / 5,
+                child: Text(WEBHOOK_FIELD_DESC[key]))),
           ],
         ),
       );
