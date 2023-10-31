@@ -23,7 +23,7 @@ dependencies:
   device_info_plus: ^9.1.0
   image_gallery_saver: ^2.0.3
   socket_io_client: ^2.0.3+1
-  fluttertoast: ^8.2.2
+  loading_animation_widget: ^1.2.0+4
   
 
 dev_dependencies:

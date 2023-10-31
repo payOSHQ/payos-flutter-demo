@@ -9,9 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'dart:typed_data';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:base/widgets/checkout_status_order.dart';
 
 class PaymentSreen extends StatefulWidget {
   const PaymentSreen({
@@ -39,44 +37,8 @@ class PaymentSreen extends StatefulWidget {
 
 class _PaymentSreen extends State<PaymentSreen> {
   final _screenshotController = ScreenshotController();
+  var _status = false;
   //socket
-  IO.Socket socket = IO.io(dotenv.env['ORDER_URL'], <String, dynamic>{
-    'transports': ['websocket'],
-    'autoConnect': false, // Tắt kết nối tự động (nếu cần)
-  });
-
-  @override
-  void initState() {
-    super.initState();
-    // Kết nối với máy chủ
-    socket.connect();
-    socket.emit("joinOrderRoom", widget.orderCode);
-    // Lắng nghe sự kiện từ máy chủ
-    socket.on("paymentUpdated", (data) async {
-      socket.emit("leaveOrderRoom", widget.orderCode);
-      Fluttertoast.showToast(
-          msg: "Thanh toán thành công!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 1,
-          backgroundColor: const Color.fromARGB(255, 192, 192, 192),
-          textColor: const Color.fromARGB(255, 61, 61, 61),
-          fontSize: 16.0);
-      await Future.delayed(const Duration(seconds: 2));
-      if (!mounted) return;
-      context.go(Uri(path: '/result', queryParameters: {
-        "orderCode": widget.orderCode,
-      }).toString());
-    });
-  }
-
-  @override
-  void dispose() {
-    // Đóng kết nối khi widget bị hủy
-    socket.emit("leaveOrderRoom", widget.orderCode);
-    socket.disconnect();
-    super.dispose();
-  }
 
   void cancelOrderClick() {
     showDialog(
@@ -105,7 +67,7 @@ class _PaymentSreen extends State<PaymentSreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 //Thoát phòng
-                socket.emit("leaveOrderRoom", widget.orderCode);
+                // socket.emit("leaveOrderRoom", widget.orderCode);
                 cancelOrder(widget.orderCode);
                 if (!mounted) return;
                 context.go(Uri(path: '/result', queryParameters: {
@@ -248,17 +210,7 @@ class _PaymentSreen extends State<PaymentSreen> {
                                 color: Color.fromARGB(255, 223, 219, 231),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5))),
-                            child: QrImageView(
-                              data: widget.qrCode,
-                              version: QrVersions.auto,
-                              dataModuleStyle: const QrDataModuleStyle(
-                                  color: Color.fromRGBO(37, 23, 78, 1),
-                                  dataModuleShape: QrDataModuleShape.circle),
-                              eyeStyle: const QrEyeStyle(
-                                eyeShape: QrEyeShape.square,
-                                color: Colors.black,
-                              ),
-                            )),
+                            child: QrCode(250)),
                       )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +274,7 @@ class _PaymentSreen extends State<PaymentSreen> {
             );
           } else if (snapshot.hasError || res?["order"]["error"] != 0) {
             //Xử lý lỗi gọi Api ở đây
-            return Text('Lỗi: ${snapshot.error}');
+            return const Text('');
           }
           return Scaffold(
               body: SafeArea(
@@ -425,38 +377,8 @@ class _PaymentSreen extends State<PaymentSreen> {
                                     borderRadius: BorderRadius.circular(5),
                                   )),
                               onPressed: onPressedQrImage,
-                              child: QrImageView(
-                                data: widget.qrCode,
-                                version: QrVersions.auto,
-                                size: 200,
-                                dataModuleStyle: const QrDataModuleStyle(
-                                    color: Color.fromRGBO(37, 23, 78, 1),
-                                    dataModuleShape: QrDataModuleShape.circle),
-                                eyeStyle: const QrEyeStyle(
-                                  eyeShape: QrEyeShape.square,
-                                  color: Colors.black,
-                                ),
-                              )),
-                          Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  text: 'Lưu ý : Nhập chính xác nội dung ',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: widget.description,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    const TextSpan(text: ' khi chuyển khoản!'),
-                                  ],
-                                ),
-                              )),
+                              child: QrCode(200)),
+                          NoticeWidget(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
@@ -479,5 +401,50 @@ class _PaymentSreen extends State<PaymentSreen> {
             )),
           ));
         });
+  }
+
+  Padding NoticeWidget() {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Column(
+          children: [
+            CheckStatusOrder(orderCode: widget.orderCode),
+            const SizedBox(
+              height: 10,
+            ),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'Lưu ý : Nhập chính xác nội dung ',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: widget.description,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const TextSpan(text: ' khi chuyển khoản!'),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+
+  // ignore: non_constant_identifier_names
+  QrImageView QrCode(double size) {
+    return QrImageView(
+      data: widget.qrCode,
+      version: QrVersions.auto,
+      size: size,
+      dataModuleStyle: const QrDataModuleStyle(
+          color: Color.fromRGBO(37, 23, 78, 1),
+          dataModuleShape: QrDataModuleShape.circle),
+      eyeStyle: const QrEyeStyle(
+        eyeShape: QrEyeShape.square,
+        color: Colors.black,
+      ),
+    );
   }
 }
